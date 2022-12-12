@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
+	"log"
 )
 
 func main() {
@@ -27,5 +28,5 @@ func main() {
 			},
 		}))
 	})
-	app.Listen("127.0.0.1:3000")
+	log.Fatal(app.Listen(":3000"))
 }

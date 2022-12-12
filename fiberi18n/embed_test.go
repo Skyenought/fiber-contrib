@@ -22,7 +22,7 @@ func newEmbedServer() *fiber.App {
 	app.Use(New(&Config{
 		Loader:           &EmbedLoader{fs},
 		UnmarshalFunc:    json.Unmarshal,
-		RootPath:         "example/localizeJSON",
+		RootPath:         "./example/localizeJSON/",
 		FormatBundleFile: "json",
 	}))
 	app.Get("/", func(ctx *fiber.Ctx) error {
