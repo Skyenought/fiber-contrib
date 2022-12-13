@@ -86,13 +86,15 @@ GetMessage get the i18n message
 		})
 */
 func GetMessage(params interface{}) (string, error) {
-	var localizer *i18n.Localizer
 	var localizeConfig *i18n.LocalizeConfig
 
 	appCfg := dataPool.Get().(*Config)
 
 	lang := appCfg.LangHandler(appCfg.ctx, appCfg.DefaultLanguage.String())
-	localizer = appCfg.localizerMap[lang]
+	localizer, hasValue := appCfg.localizerMap[lang]
+	if !hasValue {
+		localizer = appCfg.localizerMap[appCfg.DefaultLanguage.String()]
+	}
 
 	defer dataPool.Put(appCfg)
 
