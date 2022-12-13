@@ -3,17 +3,16 @@ package fiberi18n
 import (
 	"fmt"
 	"path/filepath"
-	"sync"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
-var dataPool = sync.Pool{New: func() interface{} { return new(Config) }}
+var appCfg *Config
 
 // New creates a new middleware handler
 func New(config ...*Config) fiber.Handler {
-	appCfg := configDefault(config...)
+	appCfg = configDefault(config...)
 	bundle := i18n.NewBundle(appCfg.DefaultLanguage)
 	bundle.RegisterUnmarshalFunc(appCfg.FormatBundleFile, appCfg.UnmarshalFunc)
 	appCfg.bundle = bundle
@@ -43,11 +42,11 @@ func New(config ...*Config) fiber.Handler {
 			appCfg.localizerMap[s] = i18n.NewLocalizer(appCfg.bundle, s)
 		}
 
-		dataPool.Put(appCfg)
+		//dataPool.Put(appCfg)
 
-		defaultLanguage := appCfg.DefaultLanguage.String()
-		if _, ok := appCfg.localizerMap[defaultLanguage]; !ok {
-			appCfg.localizerMap[defaultLanguage] = i18n.NewLocalizer(appCfg.bundle, defaultLanguage)
+		lang := appCfg.DefaultLanguage.String()
+		if _, ok := appCfg.localizerMap[lang]; !ok {
+			appCfg.localizerMap[lang] = i18n.NewLocalizer(appCfg.bundle, lang)
 		}
 
 		return c.Next()
@@ -88,15 +87,11 @@ GetMessage get the i18n message
 func GetMessage(params interface{}) (string, error) {
 	var localizeConfig *i18n.LocalizeConfig
 
-	appCfg := dataPool.Get().(*Config)
-
 	lang := appCfg.LangHandler(appCfg.ctx, appCfg.DefaultLanguage.String())
 	localizer, hasValue := appCfg.localizerMap[lang]
 	if !hasValue {
 		localizer = appCfg.localizerMap[appCfg.DefaultLanguage.String()]
 	}
-
-	defer dataPool.Put(appCfg)
 
 	switch paramValue := params.(type) {
 	case string:
