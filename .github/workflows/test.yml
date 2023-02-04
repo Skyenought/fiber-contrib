@@ -37,5 +37,23 @@ jobs:
           key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-${{ matrix.go-version }}-
+      - name: Fetch Repository
+        uses: actions/checkout@v3
+      - name: Test PASETO Middleware
+        run: cd ./paseto && go test ./... -v -race
+      - name: Test Fiberzap Middleware
+        run: cd ./fiberzap && go test ./... -v -race
+      - name: Test otelfiber Middleware
+        run: cd ./otelfiber && go test ./... -v -race
+      - name: Test swagger Middleware
+        run: cd ./swagger && go test ./... -v -race
+      - name: Test casbin Middleware
+        run: cd ./casbin && go test ./... -v -race
+      - name: Test fibernewrelic Middleware
+        run: cd ./fibernewrelic && go test ./... -v -race
+      - name: Test opafiber Middleware
+        run: cd ./opafiber && go test ./... -v -race
+      - name: Test fiberi18n Middleware
+        run: cd ./fiberi18n && go test ./... -v -race
       - name: Test fiberi18n Middleware
         run: cd ./fiberi18n && go test ./... -v -race
