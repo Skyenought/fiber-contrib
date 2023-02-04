@@ -96,3 +96,14 @@ func TestEmbedLoader_LoadMessage(t *testing.T) {
 		})
 	}
 }
+
+type TestStruct struct {
+	FS embed.FS
+}
+
+func TestEmbed(t *testing.T) {
+	testFS := &TestStruct{fs}
+	file, err := testFS.FS.ReadFile("example/localizeJSON/zh.json")
+	utils.AssertEqual(t, err, nil)
+	println(file)
+}

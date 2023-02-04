@@ -2,10 +2,9 @@ package fiberi18n
 
 import (
 	"fmt"
-	"path/filepath"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"path"
 )
 
 var appCfg *Config
@@ -19,13 +18,13 @@ func New(config ...*Config) fiber.Handler {
 
 	for _, lang := range appCfg.AcceptLanguages {
 		bundleFile := fmt.Sprintf("%s.%s", lang.String(), appCfg.FormatBundleFile)
-		path := filepath.Join(appCfg.RootPath, bundleFile)
+		filepath := path.Join(appCfg.RootPath, bundleFile)
 
-		buf, err := appCfg.Loader.LoadMessage(path)
+		buf, err := appCfg.Loader.LoadMessage(filepath)
 		if err != nil {
 			panic(err)
 		}
-		if _, err := appCfg.bundle.ParseMessageFileBytes(buf, path); err != nil {
+		if _, err := appCfg.bundle.ParseMessageFileBytes(buf, filepath); err != nil {
 			panic(err)
 		}
 	}
