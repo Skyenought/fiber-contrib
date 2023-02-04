@@ -35,8 +35,7 @@ func New(config ...*Config) fiber.Handler {
 			return c.Next()
 		}
 
-		appCfg.ctx = c
-		appCfg.localizerMap = map[string]*i18n.Localizer{}
+		appCfg.localizerMap, appCfg.ctx = map[string]*i18n.Localizer{}, c
 		for _, lang := range appCfg.AcceptLanguages {
 			s := lang.String()
 			appCfg.localizerMap[s] = i18n.NewLocalizer(appCfg.bundle, s)
